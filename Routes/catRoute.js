@@ -9,7 +9,7 @@ router.route('/')
     .get(catController.getCats)
     .post(catVAlidator.createCatValidator,catController.createCat);
 
-    //nested route
+    //nested route       
 router.use('/:category/subcats',subCatRoute);
 
 router.route('/:id')

@@ -19,7 +19,8 @@ const brandValidatorMiddelWare=  ((req,res,nxt)=>{
 const brandIdVAlidator=check('id').isMongoId().withMessage('Invalid Cat ID Format');
 
 const brandNameValidator=
-        check('name').notEmpty().withMessage("Cat Name Is required")
+        check('name')
+        .notEmpty().withMessage("Cat Name Is required")
         .isLength({min:3}).withMessage("Too Short Cat Name")
         .isLength({max:32}).withMessage("Too Long Cat Name")
         .custom((val,{req})=>{

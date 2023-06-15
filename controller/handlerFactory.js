@@ -14,11 +14,11 @@ exports.deleteOne=(model)=>async(req,res)=>{
  };
 
  exports.applySlugify=(req,res,nxt)=>{
-    console.log(slugify(req.body.name));
+    console.log(slugify(req.body.name)); 
     req.body.slug=slugify(req.body.name);
     nxt();
  };
-
+ https://github.com/MostafaHamdyAzab/E-commerce-API.git
 exports.updateOne=(model)=>(req,res,nxt)=>{
     const id=req.params.id;
     const name=req.body.name;

@@ -20,10 +20,12 @@ const brandIdVAlidator=check('id').isMongoId().withMessage('Invalid Cat ID Forma
 
 const brandNameValidator=
         check('name')
-        .notEmpty().withMessage("Cat Name Is required")
-        .isLength({min:3}).withMessage("Too Short Cat Name")
-        .isLength({max:32}).withMessage("Too Long Cat Name")
+        .notEmpty().withMessage("brand Name Is required")
+        .isLength({min:3}).withMessage("Too Short brand Name")
+        .isLength({max:32}).withMessage("Too Long brand Name")
+        .optional()
         .custom((val,{req})=>{
+            console.log("body",req.body)
             req.body.slug=slugify(val);
             return true;
         });

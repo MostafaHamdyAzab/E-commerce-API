@@ -22,6 +22,7 @@ const catNameValidator=
         check('name').notEmpty().withMessage("Cat Name Is required")
         .isLength({min:3}).withMessage("Too Short Cat Name")
         .isLength({max:32}).withMessage("Too Long Cat Name")
+        .optional()
         .custom((val,{req})=>{
             req.body.slug=slugify(val);
             return true;

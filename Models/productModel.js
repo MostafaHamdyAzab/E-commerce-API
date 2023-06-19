@@ -41,6 +41,7 @@ const productSchema=new Schema({
         type:String,
         required:[true,"Priduct Image cover Is Required"]
     },
+    images:[String],
     cat:{
         type:mongoose.Schema.Types.ObjectID,
         ref:'Category'
@@ -65,11 +66,35 @@ const productSchema=new Schema({
         default:0
     },
 },{timestamps:true});
+
 productSchema.pre(/^find/,function(nxt){
     this.populate({
         path:'cat',
        select:'name -_id'
     });
     nxt();
-})
+});
+
+const setIamgeUrl=(doc)=>{
+    if(doc.imageCover){
+        const imageUrl=`${process.env.BASE_URL}/products/${doc.imageCover}`;
+        doc.imageCover=imageUrl;
+        };
+    if(doc.images){
+        const imageList=[];
+        doc.images.forEach(img => {
+            const imageUrl=`${process.env.BASE_URL}/products/${img}`;
+            imageList.push(imageUrl);
+        });
+        doc.images=imageList;
+    }    
+};
+
+productSchema.post('init', function(doc) { //this call after doc is intialized in db 'call in select'
+    setIamgeUrl(doc);
+  });
+
+productSchema.post('save', function(doc) {
+    setIamgeUrl(doc);
+  });
 module.exports=mongoose.model('Product',productSchema);

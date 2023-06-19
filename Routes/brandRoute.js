@@ -7,7 +7,10 @@ const {applySlugify}=require('../controller/handlerFactory');
 // const subCatRoute=require("./subCatRoute");
 router.route('/')
     .get(brandController.getBrands)
-    .post(brandValidator.createBrandValidator,brandController.createBrand);
+    .post(brandController.uploadBrandImage,
+          brandController.resizeBrandImage,
+          brandValidator.createBrandValidator,
+          brandController.createBrand);
 
     //nested route
 // router.use('/:category/subcats',subCatRoute);
@@ -15,7 +18,10 @@ router.route('/')
 router.route('/:id')
       .get(brandValidator.getBrandValidator,brandController.getBrand);
           
-router.put('/:id',brandValidator.updateBrandValidator,applySlugify,brandController.updateBrand);
+router.put('/:id',brandController.uploadBrandImage,
+                  brandController.resizeBrandImage,
+                  brandValidator.updateBrandValidator,
+                  applySlugify,brandController.updateBrand);
 router.delete('/:id',brandValidator.deleteBrandValidator,brandController.deleteBrand);
 module.exports = router;
 

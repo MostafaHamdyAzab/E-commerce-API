@@ -1,3 +1,4 @@
+const path=require('path');
 const express=require('express');
 const app=express();
 const db=require('./config/db');
@@ -13,6 +14,7 @@ const ApiError=require("./util/apiErrors");
 const globalError=require('./middelwares/errors')
 // app.use(bodyParser.urlencoded({ extended: false}));
 app.use(express.json());
+app.use(express.static(path.join(__dirname,'upload')))
 dotenv.config({path:"config.env"});
 app.use(morgan('dev'));
 app.use('/api/cat',   catRoute);

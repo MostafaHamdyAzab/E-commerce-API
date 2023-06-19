@@ -6,7 +6,11 @@ const productValidator = require('../validator/productValidation');
 // const subCatRoute=require("./subCatRoute");
 router.route('/')
     .get(ProductController.getProducts)
-    .post(productValidator.createProductValidator,ProductController.createProduct);
+
+     .post(ProductController.uploadProductImages,
+           ProductController.resizeProductImages,
+           productValidator.createProductValidator,
+           ProductController.createProduct);
 
     //nested route
 // router.use('/:category/subcats',subCatRoute);
@@ -14,7 +18,13 @@ router.route('/')
 router.route('/:id')
       .get(productValidator.getProductValidator,ProductController.getProduct);
           
-router.put('/:id',productValidator.updateProductValidator,ProductController.updateProduct);
-router.delete('/:id',productValidator.deleteProductValidator,ProductController.deleteProduct);
+router.put('/:id',ProductController.uploadProductImages,
+                  ProductController.resizeProductImages,
+                  productValidator.updateProductValidator,
+                  ProductController.updateProduct);
+
+router.delete('/:id',productValidator.deleteProductValidator,
+                     ProductController.deleteProduct);
+
 module.exports = router;
 

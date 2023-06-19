@@ -6,7 +6,50 @@ const ApiError = require("../util/apiErrors");
 const ApiFeatures = require("../util/apiFeatures");
 const { json } = require("body-parser");
 const {createOne,deleteOne,getOne,getAll}=require('./handlerFactory');
+const multer=require('multer');
+const { uuid } = require('uuidv4');
+const sharp=require('sharp');
+const {uploadMultiFiles}=require('../middelwares/uploadFiles');
 
+exports.resizeProductImages=asyncHandler( async (req,res,nxt)=>{
+      // console.log(req.files);
+      if(req.files.imageCover){
+            const imageCoverfileName=`product-${uuid()}-${Date.now()}-cover.jpeg`;
+            await sharp(req.files.imageCover[0].buffer)
+            .resize(2000, 1300)
+            .toFormat('jpeg')
+            .jpeg({quality:90})
+            .toFile(`upload/products/${imageCoverfileName}`);
+            req.body.imageCover=imageCoverfileName;
+           
+      };
+      if(req.files.images){
+            req.body.images=[];
+       await Promise.all( //to await this loop
+            req.files.images.map(async(img,index)=>{
+                  const imageProductName=`product-${uuid()}-${Date.now()}-${index+1}.jpeg`;
+                  await sharp(img.buffer)
+                  .resize(600, 600)
+                  .toFormat('jpeg')
+                  .jpeg({quality:90})
+                  .toFile(`upload/products/${imageProductName}`);
+                  req.body.images.push(imageProductName);
+            })
+
+
+        );
+      }
+      nxt();
+  
+  });
+  
+exports.uploadProductImages=uploadMultiFiles([{name:'imageCover',maxCount:1},
+                                              {name:'images',maxCount:5}
+                                                ]);
+
+
+
+//getAllProducts
 exports.getProducts=getAll(productModel,'Products');
 
 //get specific cat

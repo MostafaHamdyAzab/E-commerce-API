@@ -75,7 +75,8 @@ const productSubCat=
                         throw new ApiError("","subCat Not Fond",400);
                         }
                       })
-                ).custom((values,{req})=>
+                ).optional()
+                .custom((values,{req})=>
                 subCatModel.find({category:req.body.cat})
                 .then((subCats)=>{
                         const subCatsIDs=[];//subCatsId in Db
@@ -119,7 +120,7 @@ const createCredintatials=[
     productColorsValidator,
     productBrandValidator,
     productCategoryValidator,
-    productSubCat,
+//     productSubCat,
     productPriceAfterDiscountValidator,
     productPriceValidator,
     productQuantityValidator,

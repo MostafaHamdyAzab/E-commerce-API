@@ -3,7 +3,7 @@ const apiError=require('../util/apiErrors');
 const ApiError = require("../util/apiErrors");
 const ApiFeatures = require("../util/apiFeatures");
 const slugify=require('slugify');
-const { model } = require('mongoose');
+
 
 exports.deleteOne=(model)=>async(req,res)=>{
     const id=req.params.id;
@@ -14,11 +14,10 @@ exports.deleteOne=(model)=>async(req,res)=>{
  };
 
  exports.applySlugify=(req,res,nxt)=>{
-    console.log(slugify(req.body.name)); 
     req.body.slug=slugify(req.body.name);
     nxt();
  };
- https://github.com/MostafaHamdyAzab/E-commerce-API.git
+
 exports.updateOne=(model)=>(req,res,nxt)=>{
     const id=req.params.id;
     const name=req.body.name;

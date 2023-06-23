@@ -20,7 +20,6 @@ exports.deleteOne=(model)=>async(req,res)=>{
 
 exports.updateOne=(model)=>(req,res,nxt)=>{
     const id=req.params.id;
-    const name=req.body.name;
     model.findOneAndUpdate(
           {_id:id},
           req.body,
@@ -31,7 +30,7 @@ exports.updateOne=(model)=>(req,res,nxt)=>{
        .catch((err)=>{
           // process.env.MSG="Not found Category compat to this id";
           return nxt(new ApiError("","Not found Category compat to this id",404));
-       })
+       });
        };
 
 exports.createOne=(model)=>(asyncHandler(async(req,res,nxt)=>{

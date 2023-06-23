@@ -9,6 +9,7 @@ const catRoute=require("./Routes/catRoute");
 const subCatRoute=require("./Routes/subCatRoute");
 const brandRoute=require("./Routes/brandRoute");
 const productRoute=require("./Routes/productRoute");
+const userRoute=require("./Routes/userRoute");
 const asyncHandler=require('express-async-handler');
 const ApiError=require("./util/apiErrors");
 const globalError=require('./middelwares/errors')
@@ -21,6 +22,7 @@ app.use('/api/cat',   catRoute);
 app.use('/api/subcat',subCatRoute);
 app.use('/api/brand', brandRoute);
 app.use('/api/product', productRoute);
+app.use('/api/user', userRoute);
 
 app.all('*',(req,res,nxt)=>{
    nxt(new ApiError(`cant find Route ${req.originalUrl}`,process.env.MSG,400));

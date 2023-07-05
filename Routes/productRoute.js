@@ -1,30 +1,39 @@
-const express=require('express');
-const ProductController=require("../controller/productController");
-const {param, validationResult}=require('express-validator');
-const router=express.Router();
-const productValidator = require('../validator/productValidation');
+const express = require("express");
+const ProductController = require("../controller/productController");
+
+const router = express.Router();
+const productValidator = require("../validator/productValidation");
 // const subCatRoute=require("./subCatRoute");
-router.route('/')
-    .get(ProductController.getProducts)
+router
+  .route("/")
+  .get(ProductController.getProducts)
 
-     .post(ProductController.uploadProductImages,
-           ProductController.resizeProductImages,
-           productValidator.createProductValidator,
-           ProductController.createProduct);
+  .post(
+    ProductController.uploadProductImages,
+    ProductController.resizeProductImages,
+    productValidator.createProductValidator,
+    ProductController.createProduct
+  );
 
-    //nested route
+//nested route
 // router.use('/:category/subcats',subCatRoute);
 
-router.route('/:id')
-      .get(productValidator.getProductValidator,ProductController.getProduct);
-          
-router.put('/:id',ProductController.uploadProductImages,
-                  ProductController.resizeProductImages,
-                  productValidator.updateProductValidator,
-                  ProductController.updateProduct);
+router
+  .route("/:id")
+  .get(productValidator.getProductValidator, ProductController.getProduct);
 
-router.delete('/:id',productValidator.deleteProductValidator,
-                     ProductController.deleteProduct);
+router.put(
+  "/:id",
+  ProductController.uploadProductImages,
+  ProductController.resizeProductImages,
+  productValidator.updateProductValidator,
+  ProductController.updateProduct
+);
+
+router.delete(
+  "/:id",
+  productValidator.deleteProductValidator,
+  ProductController.deleteProduct
+);
 
 module.exports = router;
-

@@ -1,7 +1,6 @@
 const userModel=require("../Models/userModel");
 const slugify=require('slugify');
 const asyncHandler=require('express-async-handler');
-const apiError=require('../util/apiErrors');
 const ApiError = require("../util/apiErrors");
 const ApiFeatures = require("../util/apiFeatures");
 const factory=require('./handlerFactory');

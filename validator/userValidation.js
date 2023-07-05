@@ -1,8 +1,7 @@
 const {check,validationResult}=require('express-validator');
-const ApiError = require('../util/apiErrors');
-const slugify=require('slugify');
-const userModel=require('../Models/userModel');
 const bcrypt=require('bcryptjs');
+const ApiError = require('../util/apiErrors');
+const userModel=require('../Models/userModel');
 //validate MiddelWare
 const userValidatorMiddelWare=  ((req,res,nxt)=>{
     const errors=validationResult(req);
@@ -29,7 +28,6 @@ const EmailValidator=
         .custom(async(val)=>{
           const user=await userModel.findOne({email:val})
                         if(user){
-                            console.log(user);
                             return Promise.reject(new ApiError("","Sorry Email In Use",400));
                                 }
                       });
@@ -63,11 +61,11 @@ const roleValidaor=
 
 const checkUserUpdate= //user cant reset password from here
         check('password')
-        .isEmpty().withMessage('Cant Update Password Here.');       //if check() full send Message
+        .isEmpty().withMessage('Cant Update Password Here.');       //if check() fullData send Message
 
 const updateUserPasswordValidator=
-         check('currentPassword')
-        .notEmpty().withMessage('Enter Your Current Password')       //if check() Empty send Message
+        check('currentPassword')
+        .notEmpty().withMessage('Enter Your Current Password')       //if check() not fullData send Message
         .custom(async(password,{req})=>{
             const user=await userModel.findById(req.params.id);
             if(!user){
@@ -77,8 +75,7 @@ const updateUserPasswordValidator=
             if(!isTheUserPassword){
                 throw new ApiError("","Incorrect Current Password",400);
             }
-
-        });
+    });
 
 
 
@@ -98,5 +95,9 @@ exports.deleteuserValidator=[userIdVAlidator,userValidatorMiddelWare];
 
 
 
-exports.createuserValidator=[userNameValidator,EmailValidator,confirmPassword,passwordValidator,phoneValidator,roleValidaor,userValidatorMiddelWare];
+exports.createuserValidator=[userNameValidator,EmailValidator,
+                            confirmPassword,passwordValidator
+                            ,phoneValidator,userValidatorMiddelWare];
+
+
 

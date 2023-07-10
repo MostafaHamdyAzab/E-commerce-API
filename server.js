@@ -1,5 +1,6 @@
 const path = require("path");
 const express = require("express");
+
 const app = express();
 const db = require("./config/db");
 const bodyParser = require("body-parser");
@@ -11,7 +12,7 @@ const brandRoute = require("./Routes/brandRoute");
 const productRoute = require("./Routes/productRoute");
 const userRoute = require("./Routes/userRoute");
 const authRoute = require("./Routes/authRoute");
-const asyncHandler = require("express-async-handler");
+
 const ApiError = require("./util/apiErrors");
 const globalError = require("./middelwares/errors");
 // app.use(bodyParser.urlencoded({ extended: false}));

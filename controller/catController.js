@@ -8,13 +8,15 @@ const { uploadSingleFile } = require("../middelwares/uploadFiles");
 //image Processing
 exports.resizeImage = asyncHandler(async (req, res, nxt) => {
   // console.log(req.file);
-  const fileName = `cat-${uuid()}-${Date.now()}.jpeg`;
-  await sharp(req.file.buffer)
-    .resize(600, 600)
-    .toFormat("jpeg")
-    .jpeg({ quality: 90 })
-    .toFile(`upload/cats/${fileName}`);
-  req.body.image = fileName;
+  if (req.file) {
+    const fileName = `cat-${uuid()}-${Date.now()}.jpeg`;
+    await sharp(req.file.buffer)
+      .resize(600, 600)
+      .toFormat("jpeg")
+      .jpeg({ quality: 90 })
+      .toFile(`upload/cats/${fileName}`);
+    req.body.image = fileName;
+  }
   nxt();
 });
 

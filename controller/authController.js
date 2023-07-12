@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const ApiError = require("../util/apiErrors");
 const userModel = require("../Models/userModel");
+const asyncHandler = require("express-async-handler");
 
 const generateToken = (payload) =>
   jwt.sign(
@@ -33,11 +34,12 @@ exports.login = async (req, res) => {
   res.json({ user: user, token: token });
 };
 
+//make sure that user is logged in
 exports.protect = async (req, res, nxt) => {
   let token;
   if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("azab")
+    req.headers.authorization
+    // && req.headers.authorization.startsWith("azab")
   ) {
     token = req.headers.authorization.split(" ")[1];
   }
@@ -74,6 +76,17 @@ exports.protect = async (req, res, nxt) => {
   nxt();
 }; //end exports.protect
 
+exports.allowedTo = (
+  ...roles //rest parameter syntax
+) =>
+  asyncHandler(async (req, res, nxt) => {
+    if (!roles.includes(req.user.role)) {
+      return nxt(
+        new ApiError("", "U not have a permission To access this route", 403)
+      );
+    }
+    nxt();
+  });
 exports.wellcome = (req, res) => {
   res.json("sssssssssss");
 };

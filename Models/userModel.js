@@ -23,7 +23,7 @@ const userSchema = mongoose.Schema(
     profileImage: String,
     role: {
       type: String,
-      enun: ["user", "admin"],
+      enun: ["user", "manager", "admin"],
       default: "user",
     },
     active: {

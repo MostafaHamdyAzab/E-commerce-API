@@ -10,7 +10,7 @@ const { uploadMultiFiles } = require("../middelwares/uploadFiles");
 
 exports.resizeProductImages = asyncHandler(async (req, res, nxt) => {
   // console.log(req.files);
-  if (req.files.imageCover) {
+  if (req.files) {
     const imageCoverfileName = `product-${uuid()}-${Date.now()}-cover.jpeg`;
     await sharp(req.files.imageCover[0].buffer)
       .resize(2000, 1300)
@@ -19,7 +19,7 @@ exports.resizeProductImages = asyncHandler(async (req, res, nxt) => {
       .toFile(`upload/products/${imageCoverfileName}`);
     req.body.imageCover = imageCoverfileName;
   }
-  if (req.files.images) {
+  if (req.files) {
     req.body.images = [];
     await Promise.all(
       //to await this loop

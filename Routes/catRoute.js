@@ -13,6 +13,7 @@ router
   .get(catController.getCats)
   .post(
     authContrller.protect,
+    authContrller.allowedTo("admin", "manager"),
     catController.uploadCatImage,
     catController.resizeImage,
     catVAlidator.createCatValidator,

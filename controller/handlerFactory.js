@@ -56,11 +56,9 @@ exports.getAll = (model, modelName = "") =>
       .limitFields()
       .sort();
     const document = await apiFeatures.mongooseQuery;
-    res
-      .status(200)
-      .json({
-        results: document.length,
-        paginationResult: apiFeatures.paginationResult,
-        data: document,
-      });
+    res.status(200).json({
+      results: document.length,
+      paginationResult: apiFeatures.paginationResult,
+      data: document,
+    });
   });

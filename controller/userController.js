@@ -1,13 +1,13 @@
-const userModel = require("../Models/userModel");
-const slugify = require("slugify");
-const asyncHandler = require("express-async-handler");
-const ApiError = require("../util/apiErrors");
-const ApiFeatures = require("../util/apiFeatures");
-const factory = require("./handlerFactory");
-const { uploadSingleFile } = require("../middelwares/uploadFiles");
 const sharp = require("sharp");
 const { uuid } = require("uuidv4");
 const bcrypt = require("bcryptjs");
+
+const asyncHandler = require("express-async-handler");
+const userModel = require("../Models/userModel");
+
+const ApiError = require("../util/apiErrors");
+const factory = require("./handlerFactory");
+const { uploadSingleFile } = require("../middelwares/uploadFiles");
 
 //image Processing
 exports.resizeUserImage = asyncHandler(async (req, res, nxt) => {
@@ -39,7 +39,7 @@ exports.updateUser = factory.updateOne(userModel);
 exports.deleteUser = factory.deleteOne(userModel);
 
 exports.updateUserPassword = async (req, res, nxt) => {
-  const id = req.params.id;
+  const { id } = req.params;
   await userModel
     .findOneAndUpdate(
       { _id: id },
@@ -52,8 +52,8 @@ exports.updateUserPassword = async (req, res, nxt) => {
     .then((newDocument) => {
       res.status(200).json({ data: newDocument });
     })
-    .catch((err) => {
+    .catch(() =>
       // process.env.MSG="Not found Category compat to this id";
-      return nxt(new ApiError("", "Not found Category compat to this id", 404));
-    });
+      nxt(new ApiError("", "Not found Category compat to this id", 404))
+    );
 };

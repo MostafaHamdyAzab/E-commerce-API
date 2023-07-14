@@ -27,11 +27,19 @@ router.route("/:id").get(catVAlidator.getCatValidator, catController.getCat);
 
 router.put(
   "/:id",
+  authContrller.protect,
+  authContrller.allowedTo("admin"),
   catController.uploadCatImage,
   catController.resizeImage,
   catVAlidator.updateCatValidator,
   applySlugify,
   catController.updateCat
 );
-router.delete("/:id", catVAlidator.deleteCatValidator, catController.deleteCat);
+
+router.delete(
+  "/:id",
+  authContrller.allowedTo("admin"),
+  catVAlidator.deleteCatValidator,
+  catController.deleteCat
+);
 module.exports = router;

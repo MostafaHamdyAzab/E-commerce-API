@@ -1,7 +1,9 @@
 const jwt = require("jsonwebtoken");
+const asyncHandler = require("express-async-handler");
+const crypto = require("crypto");
 const ApiError = require("../util/apiErrors");
 const userModel = require("../Models/userModel");
-const asyncHandler = require("express-async-handler");
+const sendEmail = require("../util/sendEmail");
 
 const generateToken = (payload) =>
   jwt.sign(
@@ -76,6 +78,7 @@ exports.protect = async (req, res, nxt) => {
   nxt();
 }; //end exports.protect
 
+//user permissions
 exports.allowedTo = (
   ...roles //rest parameter syntax
 ) =>
@@ -87,6 +90,44 @@ exports.allowedTo = (
     }
     nxt();
   });
+
 exports.wellcome = (req, res) => {
   res.json("sssssssssss");
+};
+
+exports.forgetPassword = asyncHandler(async (req, res, nxt) => {
+  const user = await userModel.findOne({ email: req.body.email });
+  if (!user) {
+    return nxt(new ApiError("", "Email Not Found", 404));
+  }
+  const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+  const hashedRestCode = crypto
+    .createHash("sha256")
+    .update(resetCode)
+    .digest("hex");
+
+  user.passwordResetCode = hashedRestCode;
+  user.passwordResetExpire = Date.now() + 10 * 60 * 1000;
+  user.passwordResetVerified = false;
+  await user.save();
+  const message = `Hi ${user.userName}\n We Receive a Request To Reset Your Password./n${resetCode}\n\n 
+                   Enter This Code To Complete The Reset  `;
+
+  await sendEmail({
+    email: user.email,
+    subject: "Your Password Reset Code is (is valid for 10 min only)",
+    message: message,
+  });
+
+  // user.passwordResetExpire = undefined;
+  // user.passwordResetVerified = undefined;
+  // user.passwordResetVerified = undefined;
+  // await user.save();
+  // return nxt(new ApiError("Error in Sending Email", "", 500));
+
+  res.status(200).send({ message: "Reset Done" });
+});
+
+exports.hi = () => {
+  console.log("hp");
 };

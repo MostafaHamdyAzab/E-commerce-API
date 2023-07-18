@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+
 const userSchema = mongoose.Schema(
   {
     userName: {
@@ -19,6 +20,9 @@ const userSchema = mongoose.Schema(
       required: [true, "Password Is Required"],
     },
     passwordChangedAt: Date,
+    passwordResetCode: String,
+    passwordResetExpire: Date,
+    passwordResetVerified: Boolean,
     phone: String,
     profileImage: String,
     role: {
@@ -41,12 +45,12 @@ const setIamgeUrl = (doc) => {
   }
 };
 
-userSchema.post("init", function (doc) {
+userSchema.post("init", (doc) => {
   //this call after doc is intialized in db 'call in select'
   setIamgeUrl(doc);
 });
 
-userSchema.post("save", function (doc) {
+userSchema.post("save", (doc) => {
   setIamgeUrl(doc);
 });
 

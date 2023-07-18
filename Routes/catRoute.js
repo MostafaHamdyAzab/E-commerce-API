@@ -38,6 +38,7 @@ router.put(
 
 router.delete(
   "/:id",
+  authContrller.protect,
   authContrller.allowedTo("admin"),
   catVAlidator.deleteCatValidator,
   catController.deleteCat

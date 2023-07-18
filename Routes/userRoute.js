@@ -3,6 +3,8 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controller/userController");
 const userValidator = require("../validator/userValidation");
+
+const authContrller = require("../controller/authController");
 // const subCatRoute=require("./subCatRoute");
 router
   .route("/")
@@ -38,7 +40,11 @@ router.put(
 
 router.delete(
   "/:id",
+  authContrller.protect,
+  authContrller.allowedTo("admin"),
   userValidator.deleteuserValidator,
   userController.deleteUser
 );
+
+router.post("/forgetPassword", authContrller.forgetPassword);
 module.exports = router;

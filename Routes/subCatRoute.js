@@ -2,6 +2,7 @@ const express = require("express");
 const subCatController = require("../controller/subCatController");
 const { applySlugify } = require("../controller/handlerFactory");
 
+const authContrller = require("../controller/authController");
 //to access parameter in another routes(catId)
 const router = express.Router({ mergeParams: true });
 const subCatValidator = require("../validator/subCatValidation");
@@ -10,7 +11,12 @@ const subCatValidator = require("../validator/subCatValidation");
 
 router
   .route("/")
-  .post(subCatValidator.createsubCatValidator, subCatController.createSubCat)
+  .post(
+    authContrller.protect,
+    authContrller.allowedTo("admin"),
+    subCatValidator.createsubCatValidator,
+    subCatController.createSubCat
+  )
   .get(subCatController.getSubCats);
 
 router.get(
@@ -21,6 +27,8 @@ router.get(
 
 router.put(
   "/:id",
+  authContrller.protect,
+  authContrller.allowedTo("admin"),
   subCatValidator.updatesubCatValidator,
   applySlugify,
   subCatController.updateSubCat
@@ -28,6 +36,8 @@ router.put(
 
 router.delete(
   "/:id",
+  authContrller.protect,
+  authContrller.allowedTo("admin"),
   subCatValidator.deletesubCatValidator,
   subCatController.deleteSubCat
 );

@@ -114,9 +114,11 @@ exports.forgetPassword = asyncHandler(async (req, res, nxt) => {
                    Enter This Code To Complete The Reset  `;
 
   await sendEmail({
-    email: user.email,
+    to: "allahakbar00100@gmail.com",
     subject: "Your Password Reset Code is (is valid for 10 min only)",
     message: message,
+  }).then(() => {
+    console.log("sent");
   });
 
   // user.passwordResetExpire = undefined;

@@ -5,6 +5,7 @@ const ApiFeatures = require("../util/apiFeatures");
 
 exports.deleteOne = (model) => async (req, res) => {
   const document = await model.findOneAndDelete({ _id: req.params.id });
+  // eslint-disable-next-line no-unused-expressions
   !document
     ? res.status(404).json({ msg: "No Category Found" })
     : res.status(204).json({ msg: "Cat Deleted" });
@@ -16,34 +17,32 @@ exports.applySlugify = (req, res, nxt) => {
 };
 
 exports.updateOne = (model) => (req, res, nxt) => {
-  const id = req.params.id;
+  const { id } = req.params;
   model
     .findOneAndUpdate({ _id: id }, req.body, { new: true })
     .then((newDocument) => {
       res.status(200).json({ data: newDocument });
     })
-    .catch((err) => {
+    .catch(() =>
       // process.env.MSG="Not found Category compat to this id";
-      return nxt(new ApiError("", "Not found Category compat to this id", 404));
-    });
+      nxt(new ApiError("", "Not found Category compat to this id", 404))
+    );
 };
 
 exports.createOne = (model) =>
-  asyncHandler(async (req, res, nxt) => {
+  asyncHandler(async (req, res) => {
     const document = await model.create(req.body);
     res.status(201).json({ data: document });
   });
 
 exports.getOne = (model) => (req, res, nxt) => {
-  const id = req.params.id;
+  const { id } = req.params;
   model
     .findById({ _id: id })
     .then((document) => {
       res.status(200).json({ data: document });
     })
-    .catch((err) => {
-      return nxt(new ApiError("", process.env.MSG, 404));
-    });
+    .catch(() => nxt(new ApiError("", process.env.MSG, 404)));
 };
 
 exports.getAll = (model, modelName = "") =>

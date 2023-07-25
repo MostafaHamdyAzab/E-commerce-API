@@ -46,6 +46,4 @@ router.delete(
   userController.deleteUser
 );
 
-router.post("/forgetPassword", userController.forgetPassword);
-router.post("/verifyPassRestCode", userController.verifyPassRestCode);
 module.exports = router;

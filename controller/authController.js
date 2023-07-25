@@ -95,7 +95,6 @@ exports.wellcome = (req, res) => {
   res.json("sssssssssss");
 };
 
-// exports.forgetPassword = asyncHandler(async (req, res, nxt) => {
 //   const user = await userModel.findOne({ email: req.body.email });
 //   if (!user) {
 //     return nxt(new ApiError("", "Email Not Found", 404));
@@ -151,3 +150,75 @@ exports.wellcome = (req, res) => {
 exports.hi = () => {
   console.log("hp");
 };
+
+exports.forgetPassword = asyncHandler(async (req, res, nxt) => {
+  const user = await userModel.findOne({ email: req.body.email });
+  if (!user) {
+    return nxt(new ApiError("", "Email Not Found", 404));
+  }
+  const resetCode = Math.floor(100000 + Math.random() * 900000).toString(); //10 min expirarion
+  const hashedRestCode = crypto
+    .createHash("sha256")
+    .update(resetCode)
+    .digest("hex");
+  console.log(resetCode);
+  user.passwordResetCode = hashedRestCode;
+  user.passwordResetExpire = Date.now() + 10 * 60 * 1000;
+  user.passwordResetVerified = false;
+  await user.save();
+  const message = `Hi ${user.userName}\n We Receive a Request To Reset Your Password./n${resetCode}\n\n 
+                   Enter This Code To Complete The Reset  `;
+
+  await sendEmail({
+    to: "allahakbar00100@gmail.com",
+    subject: "Your Password Reset Code is (is valid for 10 min only)",
+    message: message,
+  }).then(() => {
+    console.log("sent");
+  });
+
+  // user.passwordResetExpire = undefined;
+  // user.passwordResetVerified = undefined;
+  // user.passwordResetVerified = undefined;
+  // await user.save();
+  // return nxt(new ApiError("Error in Sending Email", "", 500));
+
+  res.status(200).send({ message: "Mail Sent" });
+});
+
+exports.verifyPassRestCode = asyncHandler(async (req, res, nxt) => {
+  //get user based on resetcode
+  const hashedRestCode = crypto
+    .createHash("sha256")
+    .update(req.body.resetCode)
+    .digest("hex");
+  const user = await userModel.findOne({
+    passwordResetCode: hashedRestCode,
+    passwordResetExpire: { $gt: Date.now() },
+  });
+  if (!user) {
+    return nxt(new ApiError("", "Rest code not valid or Expired", 401));
+  }
+  user.passwordResetVerified = true;
+  await user.save();
+  res.status(200).json(user);
+});
+
+exports.resetPassword = asyncHandler(async (req, res, nxt) => {
+  const user = await userModel.findOne({ email: req.body.email });
+  if (!user) {
+    return nxt(new ApiError("", "Not Found User Related To This Eamil", 404));
+  }
+  if (!user.passwordResetVerified) {
+    return nxt(new ApiError("", "Rest Code Not Verfiy", 404));
+  }
+  user.password = req.body.password;
+  user.passwordResetCode = undefined;
+  user.passwordResetExpire = undefined;
+  user.passwordResetVerified = false;
+  user.passwordChangedAt = Date.now();
+
+  await user.save();
+  const token = generateToken(user._id);
+  res.status(200).json(token);
+});

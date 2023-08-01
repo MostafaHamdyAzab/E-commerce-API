@@ -3,9 +3,14 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controller/userController");
 const userValidator = require("../validator/userValidation");
-
 const authContrller = require("../controller/authController");
-// const subCatRoute=require("./subCatRoute");
+
+router.get(
+  "/getMe",
+  authContrller.protect,
+  userController.getLoggedUserData,
+  userController.getUser
+);
 router
   .route("/")
   .get(userController.getUsers)
@@ -16,7 +21,6 @@ router
     userController.createUser
   );
 
-//nested route
 // router.use('/:category/subcats',subCatRoute);
 
 router

@@ -18,5 +18,5 @@ router
 router.route("/login").post(authValidator.loginValidator, authController.login);
 router.post("/forgetPassword", authController.forgetPassword);
 router.post("/verifyPassRestCode", authController.verifyPassRestCode);
-router.post("/resetPassword", authController.resetPassword);
+router.put("/resetPassword", authController.resetPassword);
 module.exports = router;

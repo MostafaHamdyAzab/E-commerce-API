@@ -38,6 +38,7 @@ exports.login = async (req, res) => {
 
 //make sure that user is logged in
 exports.protect = async (req, res, nxt) => {
+  console.log("ssss");
   let token;
   if (
     req.headers.authorization
@@ -49,6 +50,7 @@ exports.protect = async (req, res, nxt) => {
     throw new ApiError("", "First Login", 400);
   }
   const decoded = jwt.verify(token, process.env.jwtSecrtKey); //verfiy token
+
   //check if user is still exists ,may admin delete him
   const currentUser = await userModel.findById(decoded.userId);
   if (!currentUser) {
@@ -90,10 +92,6 @@ exports.allowedTo = (
     }
     nxt();
   });
-
-exports.wellcome = (req, res) => {
-  res.json("sssssssssss");
-};
 
 //   const user = await userModel.findOne({ email: req.body.email });
 //   if (!user) {
@@ -146,10 +144,6 @@ exports.wellcome = (req, res) => {
 //   await user.save();
 //   res.status(200).json(user);
 // });
-
-exports.hi = () => {
-  console.log("hp");
-};
 
 exports.forgetPassword = asyncHandler(async (req, res, nxt) => {
   const user = await userModel.findOne({ email: req.body.email });
@@ -219,6 +213,6 @@ exports.resetPassword = asyncHandler(async (req, res, nxt) => {
   user.passwordChangedAt = Date.now();
 
   await user.save();
-  const token = generateToken(user._id);
+  const token = generateToken(user._id); //Make user login
   res.status(200).json(token);
 });

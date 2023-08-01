@@ -38,6 +38,12 @@ exports.updateUser = factory.updateOne(userModel);
 
 exports.deleteUser = factory.deleteOne(userModel);
 
+exports.getLoggedUserData = asyncHandler(async (req, res, nxt) => {
+  console.log(req.user);
+  req.params.id = req.user._id;
+  nxt();
+});
+
 exports.updateUserPassword = async (req, res, nxt) => {
   const { id } = req.params;
   await userModel
@@ -56,4 +62,8 @@ exports.updateUserPassword = async (req, res, nxt) => {
       // process.env.MSG="Not found Category compat to this id";
       nxt(new ApiError("", "Not found Category compat to this id", 404))
     );
+};
+
+exports.hi = (req, res, nxt) => {
+  console.log("hi");
 };

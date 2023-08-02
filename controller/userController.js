@@ -1,6 +1,7 @@
 const sharp = require("sharp");
 const { uuid } = require("uuidv4");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const asyncHandler = require("express-async-handler");
 const userModel = require("../Models/userModel");
@@ -8,6 +9,13 @@ const crypto = require("crypto");
 const ApiError = require("../util/apiErrors");
 const factory = require("./handlerFactory");
 const { uploadSingleFile } = require("../middelwares/uploadFiles");
+
+const generateToken = (payload) =>
+  jwt.sign(
+    { userId: payload }, //payload
+    process.env.jwtSecrtKey, //secrt key
+    { expiresIn: process.env.jwtExpire } //option
+  );
 
 //image Processing
 exports.resizeUserImage = asyncHandler(async (req, res, nxt) => {
@@ -44,8 +52,44 @@ exports.getLoggedUserData = asyncHandler(async (req, res, nxt) => {
   nxt();
 });
 
+//update password while logging in and still login
+exports.updateLoggedUserPassword = asyncHandler(async (req, res, nxt) => {
+  const user = await userModel
+    .findOneAndUpdate(
+      { _id: req.user._id },
+      {
+        password: await bcrypt.hash(req.body.password, 12),
+        passwordChangedAt: Date.now(), //pass change at
+      },
+      { new: true }
+    )
+    .then((newDocument) => {
+      const token = generateToken(req.user._id);
+      res.status(400).json({ data: newDocument, token: token });
+    })
+
+    .catch(() =>
+      // process.env.MSG="Not found Category compat to this id";
+      nxt(new ApiError("", "Not found user compat to this id", 404))
+    );
+}); //end updateLoggedUserPassword
+
+exports.updateLoggedUserData = asyncHandler(async (req, res, nxt) => {
+  const updatedUser = await userModel.findByIdAndUpdate(
+    req.user._id,
+    {
+      name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+    },
+    { new: true }
+  );
+
+  res.status(200).json({ data: updatedUser });
+});
 exports.updateUserPassword = async (req, res, nxt) => {
   const { id } = req.params;
+
   await userModel
     .findOneAndUpdate(
       { _id: id },
@@ -62,8 +106,4 @@ exports.updateUserPassword = async (req, res, nxt) => {
       // process.env.MSG="Not found Category compat to this id";
       nxt(new ApiError("", "Not found Category compat to this id", 404))
     );
-};
-
-exports.hi = (req, res, nxt) => {
-  console.log("hi");
 };

@@ -90,6 +90,14 @@ exports.updateuserValidator = [
   userValidatorMiddelWare,
 ];
 
+exports.updateLoggedUserValidator = [
+  EmailValidator,
+  phoneValidator,
+  roleValidaor,
+  phoneValidator,
+  userValidatorMiddelWare,
+];
+
 exports.updateuserPasswordValidator = [
   userIdVAlidator,
   updateUserPasswordValidator,

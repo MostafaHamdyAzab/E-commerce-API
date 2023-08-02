@@ -11,6 +11,20 @@ router.get(
   userController.getLoggedUserData,
   userController.getUser
 );
+
+router.put(
+  "/updateMe",
+  authContrller.protect,
+  userValidator.updateLoggedUserValidator,
+  userController.updateLoggedUserData
+);
+
+router.put(
+  "/changeMyPassword",
+  authContrller.protect,
+  userController.updateLoggedUserPassword
+);
+
 router
   .route("/")
   .get(userController.getUsers)

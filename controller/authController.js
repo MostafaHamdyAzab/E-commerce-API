@@ -38,7 +38,6 @@ exports.login = async (req, res) => {
 
 //make sure that user is logged in
 exports.protect = async (req, res, nxt) => {
-  console.log("ssss");
   let token;
   if (
     req.headers.authorization
@@ -75,7 +74,6 @@ exports.protect = async (req, res, nxt) => {
       );
     }
   }
-
   req.user = currentUser;
   nxt();
 }; //end exports.protect

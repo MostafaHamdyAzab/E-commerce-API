@@ -13,12 +13,22 @@ router.get(
 );
 
 router.put(
-  "/updateMe",
-  authContrller.protect,
-  userValidator.updateLoggedUserValidator,
-  userController.updateLoggedUserData
-);
+      "/updateMe",
+      authContrller.protect,
+      userValidator.updateLoggedUserValidator,
+      userController.updateLoggedUserData
+      );
 
+router.delete(
+  "/deActiveMe",
+  authContrller.protect,
+  userController.deActivateUser
+);
+router.put(
+  "/activeMe",
+  userController.activateUser,
+  userController.activateUser
+);
 router.put(
   "/changeMyPassword",
   authContrller.protect,

@@ -87,6 +87,7 @@ exports.updateLoggedUserData = asyncHandler(async (req, res, nxt) => {
 
   res.status(200).json({ data: updatedUser });
 });
+
 exports.updateUserPassword = async (req, res, nxt) => {
   const { id } = req.params;
 
@@ -107,3 +108,21 @@ exports.updateUserPassword = async (req, res, nxt) => {
       nxt(new ApiError("", "Not found Category compat to this id", 404))
     );
 };
+
+exports.deActivateUser=asyncHandler(async(req,res,nxt)=>{
+  await userModel.findByIdAndUpdate(req.user._id,{active:false});
+  res.status(204).send({status:true});
+});
+
+exports.activateUser=asyncHandler(async(req,res,nxt)=>{
+
+  const user=await userModel.findOneAndUpdate({email:req.body.email},{active:true},{new:true});
+  if(user){
+    res.status(200).send({msg:'Your Account Activated Correctly'},{data:user});
+  }else{
+    return nxt(
+      new ApiError("", "Not found Account Match To This Email", 401)
+    )
+  }
+});
+ 

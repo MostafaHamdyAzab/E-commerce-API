@@ -106,6 +106,7 @@ exports.updateuserPasswordValidator = [
 ];
 
 exports.deleteuserValidator = [userIdVAlidator, userValidatorMiddelWare];
+exports.activeUserValidator = [EmailValidator, userValidatorMiddelWare];
 
 exports.createuserValidator = [
   userNameValidator,

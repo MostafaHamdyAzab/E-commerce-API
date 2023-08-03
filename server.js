@@ -3,7 +3,6 @@ const express = require("express");
 
 const app = express();
 const db = require("./config/db");
-const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const catRoute = require("./Routes/catRoute");

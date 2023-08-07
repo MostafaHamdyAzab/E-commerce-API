@@ -11,6 +11,7 @@ const brandRoute = require("./Routes/brandRoute");
 const productRoute = require("./Routes/productRoute");
 const userRoute = require("./Routes/userRoute");
 const authRoute = require("./Routes/authRoute");
+const reviewRoute = require("./Routes/reviewRoute");
 
 const ApiError = require("./util/apiErrors");
 const globalError = require("./middelwares/errors");
@@ -25,6 +26,7 @@ app.use("/api/brand", brandRoute);
 app.use("/api/product", productRoute);
 app.use("/api/user", userRoute);
 app.use("/api/auth", authRoute);
+app.use("/api/review", reviewRoute);
 
 app.all("*", (req, res, nxt) => {
   //if url not found

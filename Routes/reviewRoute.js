@@ -1,9 +1,8 @@
 const express = require("express");
 const reviewController = require("../controller/reviewController");
-const { param, validationResult } = require("express-validator");
 const router = express.Router();
 const authController = require("../controller/authController");
-const { applySlugify } = require("../controller/handlerFactory");
+const reviewValidator = require("../validator/reviewValidator");
 
 router
   .route("/")
@@ -11,6 +10,7 @@ router
   .post(
     authController.protect,
     authController.allowedTo("user"),
+    reviewValidator.createReviewValidator,
     reviewController.createReview
   );
 

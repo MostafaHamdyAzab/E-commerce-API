@@ -20,6 +20,12 @@ const reviewRatingValidator = check("rating")
   .isFloat({ min: 1, max: 5 })
   .withMessage("Rating Vvalue Must Be Between 1 and 5");
 
+//chcek review ownership for user
+const reviewIdValidator = check("id")
+  .isMongoId()
+  .withMessage("Invalid Id Validator")
+  .custom((val, req) => {});
+
 const reviewUserValidator = check("user")
   .isMongoId()
   .withMessage("Invalid UserID Format");
@@ -38,11 +44,6 @@ const reviewProductValidator = check("product")
         new Error("U Already Create a Review For This Product Before")
       );
     }
-    //   .then((review) => {
-    //     if (review) {
-    //       return Promise.reject(new Error("U Already Create a Review Before"));
-    //     }
-    //   });
   });
 
 // exports.getReviewValidator = [reviewIdVAlidator, reviewValidatorMiddelWare];

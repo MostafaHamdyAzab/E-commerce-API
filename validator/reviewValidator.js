@@ -2,6 +2,7 @@ const { check, validationResult } = require("express-validator");
 const ApiError = require("../util/apiErrors");
 const slugify = require("slugify");
 const reviewModel = require("../Models/reviewsModel");
+const { Promise } = require("mongoose");
 //validate MiddelWare
 const reviewValidatorMiddelWare = (req, res, nxt) => {
   const errors = validationResult(req);
@@ -12,7 +13,9 @@ const reviewValidatorMiddelWare = (req, res, nxt) => {
   nxt();
 };
 
-const reviewTitleValidator = check("title").optional();
+const reviewTitleValidator = check("title")
+  .notEmpty()
+  .withMessage("Rating is Required");
 
 const reviewRatingValidator = check("rating")
   .notEmpty()
@@ -20,11 +23,44 @@ const reviewRatingValidator = check("rating")
   .isFloat({ min: 1, max: 5 })
   .withMessage("Rating Vvalue Must Be Between 1 and 5");
 
-//chcek review ownership for user
 const reviewIdValidator = check("id")
   .isMongoId()
+  .withMessage("Invalid Id Validator");
+
+//chcek review ownership for user
+const reviewUserIdValidator = check("id")
+  .isMongoId()
   .withMessage("Invalid Id Validator")
-  .custom((val, req) => {});
+  .custom(async (val, { req }) => {
+    const review = await reviewModel.findById(val);
+    if (!review) {
+      Promise.reject(new Error(`not found review for this ${id}`));
+      return new ApiError("", "not found review for this", 401);
+    }
+    if (!review.user._id.equals(req.user._id)) {
+      return Promise.reject(
+        new Error(`U are not allowed to update this review`)
+      );
+    }
+  });
+
+const reviewUserRoleValidator = check("id")
+  .isMongoId()
+  .withMessage("Invalid Id Validator")
+  .custom(async (val, { req }) => {
+    if (req.user.role == "user") {
+      const review = await reviewModel.findById(val);
+      if (!review) {
+        Promise.reject(new Error(`not found review for this ${id}`));
+        return new ApiError("", "not found review for this", 401);
+      }
+      if (!review.user.equals(req.user._id)) {
+        return Promise.reject(
+          new Error(`U are not allowed to update this review`)
+        );
+      }
+    } //end if(req.user.role=='user'){
+  });
 
 const reviewUserValidator = check("user")
   .isMongoId()
@@ -46,13 +82,21 @@ const reviewProductValidator = check("product")
     }
   });
 
-// exports.getReviewValidator = [reviewIdVAlidator, reviewValidatorMiddelWare];
-// exports.updateReviewValidator = [
-//   reviewIdVAlidator,
-//   reviewNameValidator,
-//   reviewValidatorMiddelWare,
-// ];
-// exports.deleteReviewValidator = [reviewIdVAlidator, reviewValidatorMiddelWare];
+exports.getReviewValidator = [reviewIdValidator, reviewValidatorMiddelWare];
+
+exports.updateReviewValidator = [
+  reviewIdValidator,
+  reviewUserIdValidator,
+  reviewTitleValidator,
+  reviewRatingValidator,
+  reviewValidatorMiddelWare,
+];
+exports.deleteReviewValidator = [
+  reviewIdValidator,
+  reviewUserRoleValidator,
+  reviewValidatorMiddelWare,
+];
+
 exports.createReviewValidator = [
   reviewTitleValidator,
   reviewRatingValidator,

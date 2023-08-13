@@ -35,14 +35,17 @@ exports.createOne = (model) =>
     res.status(201).json({ data: document });
   });
 
-exports.getOne = (model) => (req, res, nxt) => {
+exports.getOne = (model, populateOpt) => async (req, res, nxt) => {
   const { id } = req.params;
-  model
-    .findById({ _id: id })
-    .then((document) => {
-      res.status(200).json({ data: document });
-    })
-    .catch(() => nxt(new ApiError("", process.env.MSG, 404)));
+  let query = model.findById({ _id: id });
+  if (populateOpt) {
+    query = query.populate(populateOpt);
+  }
+  const document = await query;
+  if (!document) {
+    nxt(new ApiError("", "No Document For This Id", 404));
+  }
+  res.status(200).json({ data: document });
 };
 
 exports.getAll = (model, modelName = "") =>

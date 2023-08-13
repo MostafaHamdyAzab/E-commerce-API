@@ -12,7 +12,7 @@ const reviewsModel = new mongoose.Schema(
     },
     user: {
       type: mongoose.Schema.ObjectId,
-      ref: "User",
+      ref: "user",
       required: [true, "Review Must Belong To User"],
     },
     product: {
@@ -23,5 +23,9 @@ const reviewsModel = new mongoose.Schema(
   },
   { timestamps: true }
 );
+reviewsModel.pre(/^find/, function (nxt) {
+  this.populate({ path: "user", select: "userName" });
+  nxt();
+});
 
 module.exports = mongoose.model("Review", reviewsModel);

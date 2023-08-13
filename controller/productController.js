@@ -48,7 +48,7 @@ exports.uploadProductImages = uploadMultiFiles([
 exports.getProducts = getAll(productModel, "Products");
 
 //get specific cat
-exports.getProduct = getOne(productModel);
+exports.getProduct = getOne(productModel, "reviews");
 
 exports.createProduct = createOne(productModel);
 

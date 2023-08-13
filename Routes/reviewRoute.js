@@ -9,7 +9,7 @@ router
   .get(reviewController.getReviews) //for any user
   .post(
     authController.protect,
-    authController.allowedTo("user"),
+    authController.allowedTo("user", "admin"),
     reviewValidator.createReviewValidator,
     reviewController.createReview
   );
@@ -23,13 +23,15 @@ router.put(
   "/:id",
   authController.protect,
   authController.allowedTo("user"),
+  reviewValidator.updateReviewValidator,
   reviewController.updateReview
 );
 
 router.delete(
   "/:id",
   authController.protect,
-  authController.allowedTo("user"),
+  authController.allowedTo("user", "admin"),
+  reviewValidator.deleteReviewValidator,
   reviewController.deleteReview
 );
 module.exports = router;

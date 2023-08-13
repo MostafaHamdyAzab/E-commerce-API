@@ -69,7 +69,7 @@ const productSchema = new Schema(
       default: 0,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 productSchema.pre(/^find/, function (nxt) {
@@ -78,6 +78,13 @@ productSchema.pre(/^find/, function (nxt) {
     select: "name -_id",
   });
   nxt();
+});
+
+//virtual field in model
+productSchema.virtual("reviews", {
+  ref: "Review",
+  foreignField: "product",
+  localField: "_id",
 });
 
 const setIamgeUrl = (doc) => {

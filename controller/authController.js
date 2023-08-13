@@ -56,13 +56,12 @@ exports.protect = async (req, res, nxt) => {
     return nxt(
       new ApiError("", "The USer Belong To This Header Not Exist", 401)
     );
-  };
-  console.log('sssss',currentUser.active)
-  if(currentUser.active === "false" ||currentUser.active === false ){
+  }
+  if (currentUser.active === "false" || currentUser.active === false) {
     return nxt(
       new ApiError("", "Your Account Not Active First Active It", 401)
     );
-  };
+  }
   //check if user change password and session not ended
   if (currentUser.passwordChangedAt) {
     const passwordChangedTimesStmp = parseInt(
@@ -79,10 +78,10 @@ exports.protect = async (req, res, nxt) => {
         )
       );
     }
-  };
+  }
   req.user = currentUser;
   nxt();
-  }; //end exports.protect
+}; //end exports.protect
 
 //user permissions
 exports.allowedTo = (
@@ -169,9 +168,7 @@ exports.resetPassword = asyncHandler(async (req, res, nxt) => {
   res.status(200).json(token);
 });
 
-
-
-    //   const user = await userModel.findOne({ email: req.body.email });
+//   const user = await userModel.findOne({ email: req.body.email });
 //   if (!user) {
 //     return nxt(new ApiError("", "Email Not Found", 404));
 //   }

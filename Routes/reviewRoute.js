@@ -1,12 +1,12 @@
 const express = require("express");
 const reviewController = require("../controller/reviewController");
-const router = express.Router();
+const router = express.Router({ mergeParams: true }); //manage to get parameter from url
 const authController = require("../controller/authController");
 const reviewValidator = require("../validator/reviewValidator");
 
 router
   .route("/")
-  .get(reviewController.getReviews) //for any user
+  .get(reviewController.createFilterObj, reviewController.getReviews) //available for any user
   .post(
     authController.protect,
     authController.allowedTo("user", "admin"),

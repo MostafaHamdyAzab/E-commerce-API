@@ -50,8 +50,12 @@ exports.getOne = (model, populateOpt) => async (req, res, nxt) => {
 
 exports.getAll = (model, modelName = "") =>
   asyncHandler(async (req, res, nex) => {
+    let filter = {};
+    if (req.filterObj) {
+      filter = req.filterObj;
+    }
     const NoDocuments = await model.countDocuments();
-    const apiFeatures = new ApiFeatures(model.find(), req.query)
+    const apiFeatures = new ApiFeatures(model.find(filter), req.query)
       .paginate(NoDocuments)
       .search(modelName)
       .filter()

@@ -7,8 +7,18 @@ const ApiFeatures = require("../util/apiFeatures");
 const factory = require("./handlerFactory");
 const reviewModel = require("../Models/reviewsModel");
 
+//nested route
+exports.createFilterObj = (req, res, nxt) => {
+  filterObj = {};
+  if (req.params.productId) {
+    filterObj = { product: req.params.productId };
+  }
+  req.filterObj = filterObj;
+  nxt();
+};
+
 exports.getReviews = factory.getAll(reviewModel);
-//get specific Brand
+
 exports.getReview = factory.getOne(reviewModel);
 
 exports.createReview = factory.createOne(reviewModel);

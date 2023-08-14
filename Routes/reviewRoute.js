@@ -10,6 +10,7 @@ router
   .post(
     authController.protect,
     authController.allowedTo("user", "admin"),
+    reviewController.setProductIdAndUserIdToBody,
     reviewValidator.createReviewValidator,
     reviewController.createReview
   );

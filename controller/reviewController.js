@@ -22,7 +22,6 @@ exports.getReviews = factory.getAll(reviewModel);
 exports.getReview = factory.getOne(reviewModel);
 
 exports.setProductIdAndUserIdToBody = (req, res, nxt) => {
-  console.log("ddddd", req.params.productId);
   if (!req.body.product)
     req.body.product = mongoose.Types.ObjectId(req.params.productId);
   if (!req.body.user) req.body.user = req.user._id;

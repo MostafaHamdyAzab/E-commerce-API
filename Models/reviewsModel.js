@@ -37,7 +37,7 @@ reviewsModel.statics.calcAvgRatingAndQunt = async function (productId) {
       },
     },
   ]);
-  // console.log(result);
+  console.log(result);
   if (result.length > 0) {
     await productModel.findByIdAndUpdate(productId, {
       ratingsAverage: result[0].avgRating,
@@ -52,6 +52,10 @@ reviewsModel.statics.calcAvgRatingAndQunt = async function (productId) {
 };
 
 reviewsModel.post("save", async function () {
+  await this.constructor.calcAvgRatingAndQunt(this.product);
+});
+
+reviewsModel.post("remove", async function () {
   await this.constructor.calcAvgRatingAndQunt(this.product);
 });
 

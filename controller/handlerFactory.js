@@ -5,10 +5,11 @@ const ApiFeatures = require("../util/apiFeatures");
 
 exports.deleteOne = (model) => async (req, res) => {
   const document = await model.findOneAndDelete({ _id: req.params.id });
+  document.remove();
   // eslint-disable-next-line no-unused-expressions
   !document
-    ? res.status(404).json({ msg: "No Category Found" })
-    : res.status(204).json({ msg: "Cat Deleted" });
+    ? res.status(404).json({ msg: "No document Found" })
+    : res.status(204).json({ msg: "document Deleted" });
 };
 
 exports.applySlugify = (req, res, nxt) => {
@@ -21,6 +22,7 @@ exports.updateOne = (model) => (req, res, nxt) => {
   model
     .findOneAndUpdate({ _id: id }, req.body, { new: true })
     .then((newDocument) => {
+      newDocument.save();
       res.status(200).json({ data: newDocument });
     })
     .catch(() =>

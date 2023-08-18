@@ -34,7 +34,29 @@ const userSchema = mongoose.Schema(
       type: String,
       default: true,
     },
-  },
+    //child ref (one to many)
+    wishList: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Product",
+      },
+    ],
+    addresses: [
+      {
+        id: mongoose.Schema.Types.ObjectId,
+        alias: {
+          type: String,
+          unique: true,
+          required: [true, "alias Is Required"],
+        },
+        postalCode: Number,
+        phone: String,
+        city: String,
+        details: String,
+      },
+    ],
+  }, //end userSchema
+
   { timestamps: true }
 );
 

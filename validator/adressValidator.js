@@ -16,7 +16,7 @@ const checkAlias = check("alias")
   .withMessage("alias Is required")
   .custom(async (val) => {
     console.log(val);
-    const alias = await userModel.findOne({ addresses: { alias: val } });
+    const alias = await userModel.findOne({ "addresses.alias": val });
     console.log(alias);
     if (alias) {
       return Promise.reject(new ApiError("", "This Alias Used Before", 400));

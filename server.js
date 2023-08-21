@@ -14,6 +14,7 @@ const authRoute = require("./Routes/authRoute");
 const reviewRoute = require("./Routes/reviewRoute");
 const wishListRoute = require("./Routes/wishListRoute");
 const addressRoute = require("./Routes/addressRoute");
+const couponRoute = require("./Routes/couponRoute");
 
 const ApiError = require("./util/apiErrors");
 const globalError = require("./middelwares/errors");
@@ -31,6 +32,7 @@ app.use("/api/auth", authRoute);
 app.use("/api/review", reviewRoute);
 app.use("/api/wishList", wishListRoute);
 app.use("/api/addresses", addressRoute);
+app.use("/api/coupon", couponRoute);
 
 app.all("*", (req, res, nxt) => {
   //if url not found

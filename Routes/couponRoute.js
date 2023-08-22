@@ -2,24 +2,14 @@ const express = require("express");
 const couponController = require("../controller/couponController");
 const authController = require("../controller/authController");
 const router = express.Router();
-router.use(authController.protect, authController.allowedTo("admin"));
+router.use(authController.protect, authController.allowedTo("user"));
 router
   .route("/")
-  .get(couponController.getBrands)
-  .post(
-    couponController.uploadBrandImage,
-    couponController.resizeBrandImage,
-    couponController.createBrandValidator,
-    couponController.createBrand
-  );
+  .get(couponController.getCoupons)
+  .post(couponController.createCoupon);
 
-router
-  .route("/:id")
-  .get(couponController.getBrandValidator, brandController.getBrand);
+router.route("/:id").get(couponController.getCoupon);
+router.route("/:id").put(couponController.updateCoupon);
 
-router.delete(
-  "/:id",
-  couponController.deleteBrandValidator,
-  brandController.deleteBrand
-);
+router.delete("/:id", couponController.deleteCoupon);
 module.exports = router;

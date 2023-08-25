@@ -4,10 +4,13 @@ const cartSchema = new mongoose.Schema(
     cartItems: [
       {
         product: {
-          type: mongoose.Schema.objectId,
+          type: mongoose.Schema.ObjectId,
           ref: "Product",
         },
-        quantity: Number,
+        quantity: {
+          type: Number,
+          default: 1,
+        },
         price: Number,
         color: String,
         totalCartPrice: Number,

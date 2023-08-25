@@ -16,8 +16,8 @@ const cartSchema = new mongoose.Schema(
         totalCartPrice: Number,
         totalPriceAfterDiscount: Number,
         user: {
-          type: mongoose.Schema.objectId,
-          ref: "User",
+          type: mongoose.Schema.ObjectId,
+          ref: "user",
         },
       },
     ],

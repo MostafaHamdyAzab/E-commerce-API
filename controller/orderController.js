@@ -20,7 +20,9 @@ exports.createCashOrder = asyncHandler(async (req, res, nxt) => {
     user: req.user._id,
     cartItems: cart.cartItems,
     shippingAddress: req.body.shippingAddress,
+    totalOrderPrice: totaOrderPrice,
   });
+
   if (order) {
     const bulkOpt = cart.cartItems.map((item) => ({
       updateOne: {
@@ -29,7 +31,7 @@ exports.createCashOrder = asyncHandler(async (req, res, nxt) => {
       },
     }));
     productModel.bulkWrite(bulkOpt, {});
-
-    await cart.findByIdAndDelete(req.params.cartId);
   } //end if (order)
+  await cartModel.findByIdAndRemove({ _id: req.params.cartId });
+  res.status(202).json({ order: order });
 });

@@ -35,3 +35,23 @@ exports.createCashOrder = asyncHandler(async (req, res, nxt) => {
   await cartModel.findByIdAndRemove({ _id: req.params.cartId });
   res.status(202).json({ order: order });
 });
+
+exports.getFilterObjForLoggedUser = asyncHandler((req, res, nxt) => {
+  if (req.user.role == "user") {
+    req.filterObj = { user: req.user._id };
+  }
+  nxt();
+});
+
+exports.getOrders = factory.getAll(orderModel);
+
+exports.getOrder = asyncHandler(async (req, res, nxt) => {
+  if (req.user.role === "admin") {
+    res.send({ data: await orderModel.find({ _id: req.params.id }) });
+  } else {
+    const order = await orderModel.find({ _id: req.params.id });
+    order[0].user.equals(req.user._id)
+      ? res.send({ data: order })
+      : nxt(new ApiError("", "U Not have permission To Access This Data", 401));
+  }
+});

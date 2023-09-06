@@ -3,7 +3,7 @@ const orderController = require("../controller/orderController");
 const authController = require("../controller/authController");
 const router = express.Router();
 
-router.use(authController.protect, authController.allowedTo("user", "admin"));
+router.use(authController.protect);
 
 router.post(
   "/:cartId",
@@ -13,10 +13,17 @@ router.post(
 
 router.get(
   "",
-  //   authController.allowedTo("admin", "user"),
+  authController.allowedTo("admin", "user"),
   orderController.getFilterObjForLoggedUser,
   orderController.getOrders
 );
 router.get("/:id", orderController.getOrder);
+
+router.put(
+  "/:id/pay",
+  authController.allowedTo("admin"),
+  orderController.updateOrderToPaid
+);
+router.put("/:id/deliver", orderController.updateOrderToDelivered);
 
 module.exports = router;

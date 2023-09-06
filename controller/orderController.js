@@ -55,3 +55,25 @@ exports.getOrder = asyncHandler(async (req, res, nxt) => {
       : nxt(new ApiError("", "U Not have permission To Access This Data", 401));
   }
 });
+
+exports.updateOrderToPaid = asyncHandler(async (req, res, nxt) => {
+  const order = await orderModel.findById(req.params.id);
+  if (!order) {
+    return nxt(new ApiError(``, `No Order For This Id`, 404));
+  }
+  order.isPaid = true;
+  order.paidAt = Date.now();
+  const updatedOrder = await order.save();
+  res.send({ status: "Success", data: updatedOrder });
+});
+
+exports.updateOrderToDelivered = asyncHandler(async (req, res, nxt) => {
+  const order = await orderModel.findById(req.params.id);
+  if (!order) {
+    return nxt(new ApiError(``, `No Order For This Id`, 404));
+  }
+  order.isDelivered = true;
+  order.DeliveredAt = Date.now();
+  const updatedOrder = await order.save();
+  res.send({ status: "Success", data: updatedOrder });
+});

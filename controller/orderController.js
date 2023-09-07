@@ -4,6 +4,7 @@ const orderModel = require("../Models/orderModel");
 const cartModel = require("../Models/cartModel");
 const productModel = require("../Models/productModel");
 const factory = require("./handlerFactory");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 exports.createCashOrder = asyncHandler(async (req, res, nxt) => {
   const taxPrice = 0;
@@ -76,4 +77,41 @@ exports.updateOrderToDelivered = asyncHandler(async (req, res, nxt) => {
   order.DeliveredAt = Date.now();
   const updatedOrder = await order.save();
   res.send({ status: "Success", data: updatedOrder });
+});
+
+exports.checkOutSession = asyncHandler(async (req, res, nxt) => {
+  const cart = await cartModel.findById(req.params.cartId);
+  if (!cart) {
+    return nxt(new ApiError(``, `No Cart For This Id`, 404));
+  }
+  const cartPrice = cart.totalPriceAfterDiscount
+    ? cart.totalPriceAfterDiscount
+    : cart.totalCartPrice;
+  const totaOrderPrice = cartPrice;
+  console.log(`${req.domain}://${req.get("host")}/orders`);
+  const session = await stripe.checkout.sessions.create({
+    line_items: [
+      {
+        //name: req.user.userName,
+        // amount: totaOrderPrice * 100,
+        quantity: 1,
+
+        price_data: {
+          currency: "egp",
+          unit_amount: 2000,
+          product_data: {
+            name: "Book",
+            description: "Comfortable cotton t-shirt",
+            images: ["https://example.com/t-shirt.png"],
+          },
+        },
+      },
+    ], //end lineItems
+    mode: "payment",
+    success_url: `http://${req.get("host")}/orders`,
+    cancel_url: `http://${req.get("host")}/cart`,
+    client_reference_id: req.params.cartId,
+    metadata: req.body.shippingAddress,
+  });
+  res.status(200).json({ status: "success", session });
 });

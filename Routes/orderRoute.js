@@ -5,6 +5,12 @@ const router = express.Router();
 
 router.use(authController.protect);
 
+router.get(
+  "/checkOut-session/:cartId",
+  authController.allowedTo("user"),
+  orderController.checkOutSession
+);
+
 router.post(
   "/:cartId",
   authController.allowedTo("user"),

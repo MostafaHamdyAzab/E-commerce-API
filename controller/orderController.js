@@ -88,7 +88,6 @@ exports.checkOutSession = asyncHandler(async (req, res, nxt) => {
     ? cart.totalPriceAfterDiscount
     : cart.totalCartPrice;
   const totaOrderPrice = cartPrice;
-  console.log(`${req.domain}://${req.get("host")}/orders`);
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
@@ -108,8 +107,8 @@ exports.checkOutSession = asyncHandler(async (req, res, nxt) => {
       },
     ], //end lineItems
     mode: "payment",
-    success_url: `http://${req.get("host")}/orders`,
-    cancel_url: `http://${req.get("host")}/cart`,
+    success_url: `${req.protocol}://${req.get("host")}/orders`,
+    cancel_url: `${req.protocol}://${req.get("host")}/cart`,
     client_reference_id: req.params.cartId,
     metadata: req.body.shippingAddress,
   });

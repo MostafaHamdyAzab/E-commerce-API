@@ -8,12 +8,16 @@ const monuntRoute = require("./Routes/indexRoute");
 const ApiError = require("./util/apiErrors");
 const globalError = require("./middelwares/errors");
 const cors = require("cors");
+const compression = require("compression");
 // app.use(bodyParser.urlencoded({ extended: false}));
 app.use(express.json());
-app.options("*", cors());
 app.use(express.static(path.join(__dirname, "upload")));
 dotenv.config({ path: "config.env" });
 app.use(morgan("dev"));
+
+app.use(cors()); //enable other domain to access my api
+app.options("*", cors());
+app.use(compression);
 monuntRoute(app);
 
 app.all("*", (req, res, nxt) => {

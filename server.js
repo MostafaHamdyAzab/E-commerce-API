@@ -9,17 +9,25 @@ const ApiError = require("./util/apiErrors");
 const globalError = require("./middelwares/errors");
 const cors = require("cors");
 const compression = require("compression");
-// app.use(bodyParser.urlencoded({ extended: false}));
-app.use(express.json({ limit: "15kb" }));
+const rateLimit = require("express-rate-limit");
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 5, // Limit each IP to 5 requests per `window` (here, per 15 minutes)
+  message: "Too Many Requests,please try After 15 min",
+});
+
+app.use(express.json({ limit: "10kb" }));
 app.use(express.static(path.join(__dirname, "upload")));
 dotenv.config({ path: "config.env" });
 app.use(morgan("dev"));
 
 app.use(cors()); //enable other domain to access my api
 app.options("*", cors());
-app.use(compression);
-monuntRoute(app);
 
+app.use(limiter);
+monuntRoute(app);
+app.use(compression);
 app.all("*", (req, res, nxt) => {
   //if url not found
   nxt(new ApiError(`cant find Route ${req.originalUrl}`, "", 400));
@@ -29,7 +37,7 @@ app.all("*", (req, res, nxt) => {
 //   console.log("eeee");
 //   res.status(400).json({ err });
 // });
-monuntRoute(app);
+
 app.use(globalError); //this For All Express Errors
 
 const server = app.listen(process.env.PORT, () => {

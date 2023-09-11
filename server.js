@@ -10,7 +10,7 @@ const globalError = require("./middelwares/errors");
 const cors = require("cors");
 const compression = require("compression");
 // app.use(bodyParser.urlencoded({ extended: false}));
-app.use(express.json());
+app.use(express.json({ limit: "15kb" }));
 app.use(express.static(path.join(__dirname, "upload")));
 dotenv.config({ path: "config.env" });
 app.use(morgan("dev"));

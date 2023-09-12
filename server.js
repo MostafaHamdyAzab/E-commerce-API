@@ -16,7 +16,6 @@ const limiter = rateLimit({
   limit: 5, // Limit each IP to 5 requests per `window` (here, per 15 minutes)
   message: "Too Many Requests,please try After 15 min",
 });
-
 app.use(express.json({ limit: "10kb" }));
 app.use(express.static(path.join(__dirname, "upload")));
 dotenv.config({ path: "config.env" });

@@ -10,12 +10,14 @@ const globalError = require("./middelwares/errors");
 const cors = require("cors");
 const compression = require("compression");
 const rateLimit = require("express-rate-limit");
+const hpp = require("hpp");
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  limit: 5, // Limit each IP to 5 requests per `window` (here, per 15 minutes)
+  limit: 20, // Limit each IP to 5 requests per `window` (here, per 15 minutes)
   message: "Too Many Requests,please try After 15 min",
 });
+app.use(hpp({ whitelist: ["price"] })); //protect against HTTP Parameter Pollution attacks
 app.use(express.json({ limit: "10kb" }));
 app.use(express.static(path.join(__dirname, "upload")));
 dotenv.config({ path: "config.env" });

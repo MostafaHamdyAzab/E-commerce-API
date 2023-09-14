@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const ApiError = require("../util/apiErrors");
 const userModel = require("../Models/userModel");
 const sendEmail = require("../util/sendEmail");
+const sanatize = require("../util/sanatizeDate");
 
 const generateToken = (payload) =>
   jwt.sign(
@@ -33,7 +34,7 @@ exports.signUp = async (req, res) => {
 exports.login = async (req, res) => {
   const user = await userModel.findOne({ email: req.body.email });
   const token = generateToken(user._id);
-  res.json({ user: user, token: token });
+  res.json({ user: sanatize.sanitizeUser(user), token: token });
 };
 
 //make sure that user is logged in

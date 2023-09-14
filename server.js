@@ -11,7 +11,11 @@ const cors = require("cors");
 const compression = require("compression");
 const rateLimit = require("express-rate-limit");
 const hpp = require("hpp");
+const mongoSanitize = require("express-mongo-sanitize"); //prevent MongoDB Operator Injection.
+const xss = require("xss-clean"); //ignore <script> in body
 
+app.use(mongoSanitize());
+app.use(xss());
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   limit: 20, // Limit each IP to 5 requests per `window` (here, per 15 minutes)

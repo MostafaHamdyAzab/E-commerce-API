@@ -28,7 +28,7 @@ exports.signUp = async (req, res) => {
     process.env.jwtSecrtKey, //secrt key
     { expiresIn: process.env.jwtExpire } //option
   );
-  res.status(201).json({ data: user, token: token });
+  res.status(201).json({ data: sanatize.sanitizeUser(user), token: token });
 }; //end exports.signUp
 
 exports.login = async (req, res) => {

@@ -5,3 +5,7 @@ exports.sanitizeUser = function (user) {
     email: user.email,
   };
 };
+
+exports.sanitizeProduct = function (product) {
+  return {};
+};
